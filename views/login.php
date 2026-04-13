@@ -7,7 +7,7 @@ include('../config/send_email.php');
 // Cấu hình OAuth 2.0
 $clientID = '614640831923-ri38v149j4aitt9dmc2hql9trfo0v4uq.apps.googleusercontent.com'; 
 $clientSecret = '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';
-$redirectUri = 'http://localhost/TruyenTranh/views/login.php'; 
+$redirectUri = 'https://doancuoiky-docker-container.onrender.com/views/login.php'; 
 
 // Cấu hình Google Client
 $client = new Google_Client();
@@ -17,10 +17,6 @@ $client->setRedirectUri($redirectUri);
 $client->addScope("email");
 $client->addScope("profile");
 $errors = [];
-
-// Secret key của Google reCAPTCHA
-$recaptchaSecretKey = '6LdMRIwqAAAAAACZCDqKm0LlTYnQjz2OsUaNCh95';
-
 if (isset($_GET['code'])) {
     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
     if (empty($token['error'])) {
@@ -69,16 +65,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = $_POST['login'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // Kiểm tra Google reCAPTCHA
-    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-    $recaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
-    $recaptchaValidation = json_decode(file_get_contents($recaptchaURL . "?secret=" . $recaptchaSecretKey . "&response=" . $recaptchaResponse), true);
+    // // Kiểm tra Google reCAPTCHA
+    // $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+    // $recaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
+    // $recaptchaValidation = json_decode(file_get_contents($recaptchaURL . "?secret=" . $recaptchaSecretKey . "&response=" . $recaptchaResponse), true);
 
-    if (!$recaptchaValidation['success']) {
-        $errors[] = 'Xác minh reCAPTCHA thất bại. Vui lòng thử lại!';
-    } else {
-        // Mã hóa login để so sánh với username trong database
-        $hashedLogin = md5($login);
+    // if (!$recaptchaValidation['success']) {
+    //     $errors[] = 'Xác minh reCAPTCHA thất bại. Vui lòng thử lại!';
+    // } else {
+    //     // Mã hóa login để so sánh với username trong database
+    //     $hashedLogin = md5($login);
 
         // Dùng prepared statement để kiểm tra username (đã mã hóa) hoặc email (nguyên bản)
         $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
@@ -108,7 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $stmt->close();
     }
-}
 // Tạo URL đăng nhập Google
 $googleLoginUrl = $client->createAuthUrl();
 ?>
@@ -123,7 +118,6 @@ $googleLoginUrl = $client->createAuthUrl();
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="bg-gray-900 text-white dark-mode min-h-screen transition-all duration-300">
     <?php include('../includes/header.php'); ?>
@@ -157,7 +151,6 @@ $googleLoginUrl = $client->createAuthUrl();
                     </div>
                     <a href="forgot_password.php" class="text-sm text-blue-400 hover:text-blue-300">Quên mật khẩu?</a>
                 </div>
-                <div class="g-recaptcha mb-4" data-sitekey="6LdMRIwqAAAAAIZlIaS2kTj9gAgWljC2VEfKaROG"></div>
                 <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition duration-300">
                     Đăng Nhập
                 </button>
@@ -190,13 +183,8 @@ $googleLoginUrl = $client->createAuthUrl();
     </a>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            const recaptchaResponse = grecaptcha.getResponse();
-            if (recaptchaResponse.length === 0) {
-                alert("Vui lòng xác thực bạn không phải là robot");
-                event.preventDefault();
-            }
-        });
+        document.getElementById('loginForm').addEventListener('submit', function(event) 
+        );
 
         // Xử lý menu hamburger (giả định trong header.php)
         const hamburger = document.getElementById('hamburger');
