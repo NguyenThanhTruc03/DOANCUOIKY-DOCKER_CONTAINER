@@ -1,0 +1,24 @@
+RewriteEngine On
+RewriteBase /
+
+# ==================== CÁC RULE CŨ CỦA BẠN (giữ nguyên) ====================
+ErrorDocument 404 /404.php
+
+# Quy tắc cho /truyen
+RewriteRule ^truyen$ truyen.php [L,QSA]
+RewriteRule ^truyen/(.+)$ truyen.php?id=$1 [L,QSA]
+
+RewriteRule ^hoan-thanh/([0-9]+)/?$ hoan-thanh.php?page=$1 [L,QSA]
+RewriteRule ^hoan-thanh/?$ hoan-thanh.php?page=1 [L,QSA]
+
+RewriteRule ^views/truyen-tranh/doc-truyen/?$ views/doc-truyen.php [L,QSA]
+RewriteRule ^views/truyen-tranh/([^/]+)/?$ views/truyen-tranh.php?slug=$1 [L,QSA]
+RewriteRule ^views/truyen-theo-the-loai/([^/]+)/?$ views/truyen-theo-the-loai.php?slug=$1 [L,QSA]
+
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ %1 [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
