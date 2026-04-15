@@ -3,7 +3,7 @@ FROM php:8.2-apache
 # 1. Cài extension mysqli như cũ
 RUN docker-php-ext-install mysqli
 
-# 2. BẬT MODULE REWRITE (Cực kỳ quan trọng cho file .htaccess của ông)
+# 2. BẬT MODULE REWRITE 
 RUN a2enmod rewrite
 
 # 3. Cho phép Apache đọc file .htaccess trong thư mục /var/www/html
